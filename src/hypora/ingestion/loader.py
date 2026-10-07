@@ -13,3 +13,4 @@ def load_csv(file_path: str) -> pd.DataFrame:
 
     return pd.read_csv(path)
 
+

@@ -45,3 +45,28 @@ def test_column_profile_rejects_invalid_data():
             unique_count=50,
         )
 
+
+''' For rejecting dataset with negative missing count'''
+def test_dataset_profile_rejects_negative_missing_count():
+    with pytest.raises(ValidationError):
+        ColumnProfile(
+            name="age",
+            dtype="int64",
+            missing_count=-1,
+            unique_count=10,
+        )
+
+''' For rejecting dataset with negative row count'''
+
+def test_dataset_profile_rejects_negative_row_count():
+    with pytest.raises(ValidationError):
+        DatasetProfile(
+            dataset_name="customers.csv",
+            row_count=-1,
+            column_count=1,
+            columns=[],
+            missing_values=0,
+            duplicate_rows=0,
+        )
+
+        

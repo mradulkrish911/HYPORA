@@ -161,3 +161,4 @@ def test_no_findings_for_clean_dataset():
     findings = detector.detect(profile)
 
     assert len(findings) == 0
+

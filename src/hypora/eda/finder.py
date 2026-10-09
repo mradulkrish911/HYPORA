@@ -11,9 +11,13 @@ class FindingDetector:
         # Check missingness for each column
         for column in profile.columns:
             missing_percentage = (
-                column.missing_count / profile.row_count
-            ) * 100
+                #what if the profile.row_count is 0?
+                (column.missing_count / profile.row_count) * 100
+                if profile.row_count > 0
+                else 0
+            )
 
+            # Constraints needs to be dynamic
             if missing_percentage > 30:
                 findings.append(
                     Finding(

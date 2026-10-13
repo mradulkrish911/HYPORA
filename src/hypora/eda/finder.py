@@ -45,32 +45,33 @@ class FindingDetector:
                 )
 
         # Check duplicate rows
-        duplicate_percentage = (
-            profile.duplicate_rows / profile.row_count
-        ) * 100
+        if profile.row_count > 0:
+            duplicate_percentage = (
+                profile.duplicate_rows / profile.row_count
+            ) * 100
 
-        if duplicate_percentage > 10:
-            findings.append(
-                Finding(
-                    finding_type="high_duplicate_rate",
-                    description=(
-                        f"Dataset contains "
-                        f"{duplicate_percentage:.1f}% duplicate rows."
-                    ),
-                    severity="high",
+            if duplicate_percentage > 10:
+                findings.append(
+                    Finding(
+                        finding_type="high_duplicate_rate",
+                        description=(
+                            f"Dataset contains "
+                            f"{duplicate_percentage:.1f}% duplicate rows."
+                        ),
+                        severity="high",
+                    )
                 )
-            )
 
-        elif duplicate_percentage >= 5:
-            findings.append(
-                Finding(
-                    finding_type="moderate_duplicate_rate",
-                    description=(
-                        f"Dataset contains "
-                        f"{duplicate_percentage:.1f}% duplicate rows."
-                    ),
-                    severity="medium",
+            elif duplicate_percentage >= 5:
+                findings.append(
+                    Finding(
+                        finding_type="moderate_duplicate_rate",
+                        description=(
+                            f"Dataset contains "
+                            f"{duplicate_percentage:.1f}% duplicate rows."
+                        ),
+                        severity="medium",
+                    )
                 )
-            )
 
         return findings

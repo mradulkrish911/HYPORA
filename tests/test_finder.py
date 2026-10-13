@@ -145,6 +145,7 @@ def test_no_findings_for_clean_dataset():
                 missing_count=2,
                 unique_count=50,
             ),
+            
             ColumnProfile(
                 name="salary",
                 dtype="int64",
@@ -161,4 +162,99 @@ def test_no_findings_for_clean_dataset():
     findings = detector.detect(profile)
 
     assert len(findings) == 0
+
+def test_detects_missingness_at_moderate_threshold():
+    profile = DatasetProfile(
+        dataset_name="employees.csv",
+        row_count=100,
+        column_count=1,
+        columns=[
+            ColumnProfile(
+                name="salary",
+                dtype="float64",
+                missing_count=10,
+                unique_count=90,
+            )
+        ],
+        missing_values=10,
+        duplicate_rows=0,
+    )
+
+    findings = FindingDetector().detect(profile)
+
+    assert len(findings) == 1
+    assert findings[0].finding_type == "moderate_missingness"
+    assert findings[0].severity == "medium"
+
+
+def test_detects_missingness_at_high_threshold_boundary():
+    profile = DatasetProfile(
+        dataset_name="employees.csv",
+        row_count=100,
+        column_count=1,
+        columns=[
+            ColumnProfile(
+                name="salary",
+                dtype="float64",
+                missing_count=30,
+                unique_count=70,
+            )
+        ],
+        missing_values=30,
+        duplicate_rows=0,
+    )
+
+    findings = FindingDetector().detect(profile)
+
+    assert len(findings) == 1
+    assert findings[0].finding_type == "moderate_missingness"
+    assert findings[0].severity == "medium"
+
+
+def test_detects_duplicate_rate_at_moderate_threshold():
+    profile = DatasetProfile(
+        dataset_name="employees.csv",
+        row_count=100,
+        column_count=1,
+        columns=[
+            ColumnProfile(
+                name="name",
+                dtype="object",
+                missing_count=0,
+                unique_count=95,
+            )
+        ],
+        missing_values=0,
+        duplicate_rows=5,
+    )
+
+    findings = FindingDetector().detect(profile)
+
+    assert len(findings) == 1
+    assert findings[0].finding_type == "moderate_duplicate_rate"
+    assert findings[0].severity == "medium"
+
+
+def test_detects_duplicate_rate_at_high_threshold_boundary():
+    profile = DatasetProfile(
+        dataset_name="employees.csv",
+        row_count=100,
+        column_count=1,
+        columns=[
+            ColumnProfile(
+                name="name",
+                dtype="object",
+                missing_count=0,
+                unique_count=90,
+            )
+        ],
+        missing_values=0,
+        duplicate_rows=10,
+    )
+
+    findings = FindingDetector().detect(profile)
+
+    assert len(findings) == 1
+    assert findings[0].finding_type == "moderate_duplicate_rate"
+    assert findings[0].severity == "medium"
 
